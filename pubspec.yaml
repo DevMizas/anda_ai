@@ -32,8 +32,10 @@ dependencies:
     sdk: flutter
   mobx: ^2.2.1
   flutter_mobx: ^2.1.1
-  pedometer: ^3.0.0
+  pedometer: ^4.0.1
+  permission_handler: ^11.0.1
   json_annotation: ^4.8.1
+  flutter_reactive_ble: ^5.4.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -44,6 +46,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.4.6
   json_serializable: ^6.7.1
+  mobx_codegen: ^2.3.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
