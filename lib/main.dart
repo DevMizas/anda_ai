@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'presentation/presentation.dart';
 
 void main() {
@@ -10,12 +11,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bleViewModel = BleViewModel();
+
     return MaterialApp(
       title: 'Anda aí',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomeView(),
+      home: HomeView(bleViewModel: bleViewModel),
     );
   }
 }
