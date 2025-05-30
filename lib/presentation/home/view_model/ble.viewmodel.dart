@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:mobx/mobx.dart';
 
@@ -71,19 +72,16 @@ abstract class _BleViewModelBase with Store {
           if (char.uuid == charUuid) {
             await char.setNotifyValue(true);
             char.lastValueStream.listen((value) {
-              if (value.isNotEmpty) {
-                updateSteps(value.first);
+              if (value.length >= 2) {
+                final byteData = ByteData.sublistView(Uint8List.fromList(value));
+                final stepCount = byteData.getUint16(0, Endian.little); // ou Endian.big dependendo do dispositivo
+                updateSteps(stepCount);
               }
             });
           }
         }
       }
     }
-  }
-
-  @action
-  Future<void> discoverServices(BluetoothDevice device) async {
-    // Você pode implementar aqui se precisar trabalhar com serviços manualmente
   }
 
   @action

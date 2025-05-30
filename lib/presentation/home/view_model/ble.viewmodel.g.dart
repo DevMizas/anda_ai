@@ -84,15 +84,6 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
         .run(() => super.subscribeToSteps(device, serviceUuid, charUuid));
   }
 
-  late final _$discoverServicesAsyncAction =
-      AsyncAction('_BleViewModelBase.discoverServices', context: context);
-
-  @override
-  Future<void> discoverServices(BluetoothDevice device) {
-    return _$discoverServicesAsyncAction
-        .run(() => super.discoverServices(device));
-  }
-
   late final _$disposeAsyncAction =
       AsyncAction('_BleViewModelBase.dispose', context: context);
 

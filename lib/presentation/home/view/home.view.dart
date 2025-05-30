@@ -112,7 +112,6 @@ class _HomeViewState extends State<HomeView> {
                       trailing: const Icon(Icons.bluetooth),
                       onTap: () async {
                         await vm.connectToDevice(device);
-                        await vm.discoverServices(device);
                         await vm.subscribeToSteps(
                           device,
                           Guid('6e400001-b5a3-f393-e0a9-e50e24dcca9e'),
