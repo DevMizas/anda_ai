@@ -84,14 +84,6 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
         .run(() => super.subscribeToSteps(device, serviceUuid, charUuid));
   }
 
-  late final _$disposeAsyncAction =
-      AsyncAction('_BleViewModelBase.dispose', context: context);
-
-  @override
-  Future<void> dispose() {
-    return _$disposeAsyncAction.run(() => super.dispose());
-  }
-
   late final _$_BleViewModelBaseActionController =
       ActionController(name: '_BleViewModelBase', context: context);
 
