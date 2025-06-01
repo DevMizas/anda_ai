@@ -1,13 +1,17 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+import 'package:anda_ai/infra/infra.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:mobx/mobx.dart';
-
 part 'ble.viewmodel.g.dart';
 
 class BleViewModel = _BleViewModelBase with _$BleViewModel;
 
 abstract class _BleViewModelBase with Store {
+  late final BleRepository _repository;
+
+  _BleViewModelBase(this._repository);
+
   @observable
   ObservableList<BluetoothDevice> devices = ObservableList();
 
@@ -39,9 +43,9 @@ abstract class _BleViewModelBase with Store {
   @action
   Future<void> startScan() async {
     devices.clear();
-
     await _scanSubscription?.cancel();
-    _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
+
+    _scanSubscription = _repository.scanResults.listen((results) {
       for (var result in results) {
         final device = result.device;
         if (device.platformName.isNotEmpty) {
@@ -50,33 +54,34 @@ abstract class _BleViewModelBase with Store {
       }
     });
 
-    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    await _repository.startScan();
   }
 
   @action
   Future<void> connectToDevice(BluetoothDevice device) async {
     try {
-      await device.connect(timeout: const Duration(seconds: 10));
+      await _repository.connectToDevice(device);
       setConnectionState("Conectado a ${device.advName}");
-    } catch (e) {
+    } catch (_) {
       setConnectionState("Erro ao conectar");
     }
   }
 
   @action
   Future<void> subscribeToSteps(BluetoothDevice device, Guid serviceUuid, Guid charUuid) async {
-    final services = await device.discoverServices();
+    final services = await _repository.discoverServices(device);
     for (var service in services) {
       if (service.uuid == serviceUuid) {
         for (var char in service.characteristics) {
           if (char.uuid == charUuid) {
-            await char.setNotifyValue(true);
-            char.lastValueStream.listen((value) {
-              if (value.length >= 2) {
-                final byteData = ByteData.sublistView(Uint8List.fromList(value));
-                final stepCount = byteData.getUint16(0, Endian.little); // ou Endian.big dependendo do dispositivo
-                updateSteps(stepCount);
-              }
+            _repository.onStepsReceived = (int steps) {
+              print("Passos detectados: $steps");
+            };
+            await _repository.setNotify(char, (value) {
+              print('RAW VALUE: $value');
+              final stepCount = _repository.parseStepCount(Uint8List.fromList(value));
+              print('→ Passos extraídos: $stepCount');
+              updateSteps(stepCount);
             });
           }
         }
