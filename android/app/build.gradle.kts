@@ -34,7 +34,6 @@ android {
     }
 }
 
-// Definindo o Java Toolchain (opcional, Gradle 7+)
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(11))
@@ -43,4 +42,9 @@ java {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Adiciona o Material Components para usar Theme.MaterialComponents.*
+    implementation("com.google.android.material:material:1.11.0")
 }

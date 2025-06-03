@@ -2,68 +2,19 @@ import 'package:anda_ai/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:pedometer/pedometer.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
+  final sensorCheckViewModel = SensorCheckViewModel();
   final BleViewModel bleViewModel;
 
-  const HomeView({
+  HomeView({
     super.key,
     required this.bleViewModel,
   });
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  final Stream<StepCount>? _stepCountStream = Pedometer.stepCountStream;
-  String _steps = '0';
-  String _status = 'Verificando sensor...';
-
-  @override
-  void initState() {
-    super.initState();
-    _initPedometer();
-  }
-
-  Future<void> _initPedometer() async {
-    final status = await Permission.activityRecognition.request();
-    if (status != PermissionStatus.granted) {
-      setState(() {
-        _status = 'Permissão não concedida para ler passos';
-      });
-      return;
-    }
-
-    try {
-      _stepCountStream!.listen(_onStepCount).onError(_onStepCountError);
-      setState(() {
-        _status = 'Sensor funcionando';
-      });
-    } catch (e) {
-      setState(() {
-        _status = 'Erro ao iniciar pedômetro';
-      });
-    }
-  }
-
-  void _onStepCount(StepCount event) {
-    setState(() {
-      _steps = event.steps.toString();
-    });
-  }
-
-  void _onStepCountError(error) {
-    setState(() {
-      _status = 'Sensor de passos não disponível neste dispositivo';
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = widget.bleViewModel;
+    final vm = bleViewModel;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Anda aí")),
@@ -78,7 +29,7 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             Text(
-              'Passos (sensor): $_steps',
+              'Passos (sensor): ${sensorCheckViewModel.steps}',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
@@ -125,7 +76,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             const SizedBox(height: 16),
             Text(
-              _status,
+              sensorCheckViewModel.sensorStatus,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),

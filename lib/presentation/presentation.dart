@@ -1,2 +1,2 @@
-export './home/view_model/ble.viewmodel.dart';
-export './home/view/home.view.dart';
+export './home/home.dart';
+export './sensor_check/sensor_check.dart';
