@@ -1,3 +1,4 @@
+import 'package:anda_ai/core/core.dart';
 import 'package:anda_ai/infra/infra.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +18,13 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Anda aí',
+      initialRoute: AppRoutes.home,
       debugShowCheckedModeBanner: false,
-      home: SensorCheckView(),//HomeView(bleViewModel: bleViewModel),
+      routes: {
+        AppRoutes.home: (_) => SensorCheckView(),
+        AppRoutes.steps: (_) => Stepsiew(bleViewModel: bleViewModel),
+        AppRoutes.searchingBluetooth: (_) => SearchingBluetoothView(bleViewModel: bleViewModel),
+      },
     );
   }
 }
