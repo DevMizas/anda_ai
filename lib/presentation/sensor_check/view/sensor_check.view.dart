@@ -1,6 +1,7 @@
 import 'package:anda_ai/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:lottie/lottie.dart';
 
 class SensorCheckView extends StatefulWidget {
   final sensorCheckViewModel = SensorCheckViewModel();
@@ -19,17 +20,64 @@ class _SensorCheckViewState extends State<SensorCheckView> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) {
-        return Container(
-          alignment: Alignment.center,
-          child: Text(
-            widget.sensorCheckViewModel.sensorStatus,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        );
-      },
+    final width = MediaQuery.of(context).size.width / 375;
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 212, 182, 255),
+      body: Observer(
+        builder: (_) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (widget.sensorCheckViewModel.hasSensor == false)
+                Lottie.asset('assets/error_animation.json'),
+              SizedBox(height: 40 * width),
+              Text(
+                widget.sensorCheckViewModel.sensorStatusText,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 27,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 140 * width),
+              if (widget.sensorCheckViewModel.hasSensor == false)
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: 290 * width,
+                    height: 70 * width,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.symmetric(horizontal: 24 * width),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 218, 255, 96),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Buscar via Bluetooth",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Spacer(),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

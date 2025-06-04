@@ -7,10 +7,7 @@ class HomeView extends StatelessWidget {
   final sensorCheckViewModel = SensorCheckViewModel();
   final BleViewModel bleViewModel;
 
-  HomeView({
-    super.key,
-    required this.bleViewModel,
-  });
+  HomeView({super.key, required this.bleViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +35,9 @@ class HomeView extends StatelessWidget {
                 'Status Bluetooth: ${vm.connectionState}',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: vm.connectionState.contains("Conectado") ? Colors.green : Colors.red,
+                  color: vm.connectionState.contains("Conectado")
+                      ? Colors.green
+                      : Colors.red,
                 ),
               ),
             ),
@@ -76,7 +75,7 @@ class HomeView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              sensorCheckViewModel.sensorStatus,
+              sensorCheckViewModel.sensorStatusText,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),

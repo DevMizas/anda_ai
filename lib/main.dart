@@ -17,10 +17,8 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Anda aí',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: HomeView(bleViewModel: bleViewModel),
+      debugShowCheckedModeBanner: false,
+      home: SensorCheckView(),//HomeView(bleViewModel: bleViewModel),
     );
   }
 }

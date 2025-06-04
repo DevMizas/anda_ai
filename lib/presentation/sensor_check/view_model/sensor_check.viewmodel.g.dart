@@ -25,19 +25,35 @@ mixin _$SensorCheckViewModel on _SensorCheckViewModelBase, Store {
     });
   }
 
-  late final _$sensorStatusAtom =
-      Atom(name: '_SensorCheckViewModelBase.sensorStatus', context: context);
+  late final _$sensorStatusTextAtom = Atom(
+      name: '_SensorCheckViewModelBase.sensorStatusText', context: context);
 
   @override
-  String get sensorStatus {
-    _$sensorStatusAtom.reportRead();
-    return super.sensorStatus;
+  String get sensorStatusText {
+    _$sensorStatusTextAtom.reportRead();
+    return super.sensorStatusText;
   }
 
   @override
-  set sensorStatus(String value) {
-    _$sensorStatusAtom.reportWrite(value, super.sensorStatus, () {
-      super.sensorStatus = value;
+  set sensorStatusText(String value) {
+    _$sensorStatusTextAtom.reportWrite(value, super.sensorStatusText, () {
+      super.sensorStatusText = value;
+    });
+  }
+
+  late final _$hasSensorAtom =
+      Atom(name: '_SensorCheckViewModelBase.hasSensor', context: context);
+
+  @override
+  bool get hasSensor {
+    _$hasSensorAtom.reportRead();
+    return super.hasSensor;
+  }
+
+  @override
+  set hasSensor(bool value) {
+    _$hasSensorAtom.reportWrite(value, super.hasSensor, () {
+      super.hasSensor = value;
     });
   }
 
@@ -78,7 +94,8 @@ mixin _$SensorCheckViewModel on _SensorCheckViewModelBase, Store {
   String toString() {
     return '''
 steps: ${steps},
-sensorStatus: ${sensorStatus}
+sensorStatusText: ${sensorStatusText},
+hasSensor: ${hasSensor}
     ''';
   }
 }

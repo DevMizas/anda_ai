@@ -4,40 +4,46 @@ import 'package:permission_handler/permission_handler.dart';
 
 part 'sensor_check.viewmodel.g.dart';
 
-class SensorCheckViewModel = _SensorCheckViewModelBase with _$SensorCheckViewModel;
+class SensorCheckViewModel = _SensorCheckViewModelBase
+    with _$SensorCheckViewModel;
 
 abstract class _SensorCheckViewModelBase with Store {
-  final Stream<StepCount>? _stepCountStream = Pedometer.stepCountStream;
-
   @observable
   String steps = '0';
 
   @observable
-  String sensorStatus = 'Verificando sensor...';
+  String sensorStatusText = 'Verificando sensor...';
+
+  @observable
+  bool hasSensor = false;
 
   @action
   Future<void> initPedometer() async {
     final status = await Permission.activityRecognition.request();
     if (status != PermissionStatus.granted) {
-        sensorStatus = 'Permissão não concedida para ler passos';
+      sensorStatusText = 'Permissão não concedida para ler passos';
+      hasSensor = false;
       return;
     }
 
     try {
-      _stepCountStream!.listen(onStepCount).onError(_onStepCountError);
-        sensorStatus = 'Sensor funcionando';
+      Pedometer.stepCountStream.listen(onStepCount).onError(_onStepCountError);
+      sensorStatusText = 'Sensor funcionando';
+      hasSensor = true;
     } catch (e) {
-        sensorStatus = 'Erro ao iniciar pedômetro';
+      sensorStatusText = 'Erro ao iniciar pedômetro';
+      hasSensor = false;
     }
   }
 
   @action
   void onStepCount(StepCount event) {
-      steps = event.steps.toString();
+    steps = event.steps.toString();
   }
 
   @action
   void _onStepCountError(error) {
-      sensorStatus = 'Sensor de passos não disponível neste dispositivo';
+    sensorStatusText = 'Sensor não disponível';
+    hasSensor = false;
   }
 }
