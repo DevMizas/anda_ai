@@ -5,15 +5,16 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 class BottonSearchBluetooth extends StatelessWidget {
   final BleViewModel bleViewModel;
+  final SearchongBluetoothViewModel searchingBluetoothVM;
   const BottonSearchBluetooth({
     super.key,
     required this.bleViewModel,
+    required this.searchingBluetoothVM,
   });
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width / 375;
-    final searchingBluetoothVM = SearchongBluetoothViewModel();
     final vm = bleViewModel;
     return Stack(
       alignment: AlignmentDirectional.centerStart,
@@ -33,15 +34,14 @@ class BottonSearchBluetooth extends StatelessWidget {
             direction: Direction.clockwise,
           ),
         ),
-        Observer(
-          builder: (context) {
-            return Align(
-              alignment: Alignment.center,
-              child: InkWell(
+        Align(
+          alignment: Alignment.center,
+          child: Observer(
+            builder: (context) {
+              return InkWell(
                 onTap: () {
-                  //vm.startScan();
-                  searchingBluetoothVM.setBluetoothList(true);
-                  print("AAAAAAAAAAAAA");
+                  vm.startScan();
+                  searchingBluetoothVM.setBluetoothListTrue();
                 },
                 child: Container(
                   width: 150 * width,
@@ -56,9 +56,9 @@ class BottonSearchBluetooth extends StatelessWidget {
                     size: 100 * width,
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ],
     );

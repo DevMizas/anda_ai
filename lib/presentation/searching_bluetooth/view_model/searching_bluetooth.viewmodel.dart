@@ -5,13 +5,15 @@ class SearchongBluetoothViewModel = _SearchongBluetoothViewModelBase with _$Sear
 
 abstract class _SearchongBluetoothViewModelBase with Store {
   @observable
-  bool _bluetoothList = false;
-
-  @computed
-  bool get bluetoothList => _bluetoothList;
+  bool bluetoothList = false;
 
   @action
-  void setBluetoothList(bool value) {
-    _bluetoothList = value;
+  void setBluetoothListTrue() {
+    bluetoothList = true;
+  }
+
+  @action
+  void setBluetoothListFalse() {
+    bluetoothList = false;
   }
 }

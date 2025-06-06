@@ -41,12 +41,15 @@ abstract class _BleViewModelBase with Store {
 
   @action
   Future<void> startScan() async {
+    print("Iniciando scan...");
     devices.clear();
     await _scanSubscription?.cancel();
 
     _scanSubscription = _repository.scanResults.listen((results) {
+      print("Resultados encontrados: ${results.length}");
       for (var result in results) {
         final device = result.device;
+        print("Dispositivo: ${device.platformName} - ${device.remoteId}");
         if (device.platformName.isNotEmpty) {
           addDevice(device);
         }
@@ -66,23 +69,23 @@ abstract class _BleViewModelBase with Store {
     }
   }
 
- @action
-Future<void> subscribeToSteps(
-  BluetoothDevice device,
-  Guid serviceUuid,
-  Guid charUuid,
-) async {
-  final services = await _repository.discoverServices(device);
-  for (var service in services) {
-    if (service.uuid == serviceUuid) {
-      for (var char in service.characteristics) {
-        if (char.uuid == charUuid) {
-          _repository.onStepsReceived = (int steps) {
-            updateSteps(steps);
-          };
+  @action
+  Future<void> subscribeToSteps(
+    BluetoothDevice device,
+    Guid serviceUuid,
+    Guid charUuid,
+  ) async {
+    final services = await _repository.discoverServices(device);
+    for (var service in services) {
+      if (service.uuid == serviceUuid) {
+        for (var char in service.characteristics) {
+          if (char.uuid == charUuid) {
+            _repository.onStepsReceived = (int steps) {
+              updateSteps(steps);
+            };
+          }
         }
       }
     }
   }
-}
 }

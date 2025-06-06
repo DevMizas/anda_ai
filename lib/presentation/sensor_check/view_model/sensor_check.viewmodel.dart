@@ -28,7 +28,7 @@ abstract class _SensorCheckViewModelBase with Store {
     try {
       Pedometer.stepCountStream.listen(onStepCount).onError(_onStepCountError);
       sensorStatusText = "Sensor funcionando";
-      hasSensor = true;
+      hasSensor = false;
     } catch (e) {
       sensorStatusText = "Erro ao iniciar pedômetro";
       hasSensor = false;
