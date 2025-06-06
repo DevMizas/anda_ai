@@ -87,13 +87,17 @@ class SearchingBluetoothView extends StatelessWidget {
                           ),
                         )
                       else
-                        Text(
-                          "Não foram encontrados dispositivos",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              "Não foram encontrados dispositivos",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
                         ),
                     ],
