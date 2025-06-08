@@ -41,7 +41,7 @@ class BottonSearchBluetooth extends StatelessWidget {
               return InkWell(
                 onTap: () {
                   vm.startScan();
-                  searchingBluetoothVM.setBluetoothListTrue();
+                  searchingBluetoothVM.setBluetoothList(true);
                 },
                 child: Container(
                   width: 150 * width,

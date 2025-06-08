@@ -8,12 +8,7 @@ abstract class _SearchongBluetoothViewModelBase with Store {
   bool bluetoothList = false;
 
   @action
-  void setBluetoothListTrue() {
-    bluetoothList = true;
-  }
-
-  @action
-  void setBluetoothListFalse() {
-    bluetoothList = false;
+  void setBluetoothList(bool value) {
+    bluetoothList = value;
   }
 }

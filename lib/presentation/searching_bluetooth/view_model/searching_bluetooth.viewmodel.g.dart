@@ -30,25 +30,11 @@ mixin _$SearchongBluetoothViewModel on _SearchongBluetoothViewModelBase, Store {
           name: '_SearchongBluetoothViewModelBase', context: context);
 
   @override
-  void setBluetoothListTrue() {
-    final _$actionInfo =
-        _$_SearchongBluetoothViewModelBaseActionController.startAction(
-            name: '_SearchongBluetoothViewModelBase.setBluetoothListTrue');
+  void setBluetoothList(bool value) {
+    final _$actionInfo = _$_SearchongBluetoothViewModelBaseActionController
+        .startAction(name: '_SearchongBluetoothViewModelBase.setBluetoothList');
     try {
-      return super.setBluetoothListTrue();
-    } finally {
-      _$_SearchongBluetoothViewModelBaseActionController
-          .endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setBluetoothListFalse() {
-    final _$actionInfo =
-        _$_SearchongBluetoothViewModelBaseActionController.startAction(
-            name: '_SearchongBluetoothViewModelBase.setBluetoothListFalse');
-    try {
-      return super.setBluetoothListFalse();
+      return super.setBluetoothList(value);
     } finally {
       _$_SearchongBluetoothViewModelBaseActionController
           .endAction(_$actionInfo);

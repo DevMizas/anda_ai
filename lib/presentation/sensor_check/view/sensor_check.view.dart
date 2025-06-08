@@ -75,7 +75,7 @@ class _SensorCheckViewState extends State<SensorCheckView> {
                     children: [
                       Text(
                         widget.sensorCheckViewModel.hasSensor == false
-                            ? "Buscar via Bluetooth"
+                            ? "Tentar via Bluetooth"
                             : "Bora andar",
                         textAlign: TextAlign.center,
                         style: TextStyle(
