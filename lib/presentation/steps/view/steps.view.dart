@@ -1,4 +1,4 @@
-import 'package:anda_ai/presentation/home/home.dart';
+import 'package:anda_ai/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 

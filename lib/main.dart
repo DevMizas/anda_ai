@@ -1,5 +1,4 @@
 import 'package:anda_ai/core/core.dart';
-import 'package:anda_ai/infra/infra.dart';
 import 'package:flutter/material.dart';
 
 import 'presentation/presentation.dart';
@@ -13,9 +12,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repository = BleRepository();
-    final bleViewModel = BleViewModel(repository);
-    final searchingBluetoothVM = SearchongBluetoothViewModel();
+    final searchingBluetoothVM = SearchingBluetoothViewModel();
+    final bleViewModel = BleViewModel();
+  
 
     return MaterialApp(
       title: 'Anda aí',

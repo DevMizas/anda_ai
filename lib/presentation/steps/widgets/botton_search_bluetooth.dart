@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_arc_text/flutter_arc_text.dart';
-import 'package:anda_ai/presentation/presentation.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:anda_ai/presentation/presentation.dart';
 
 class BottonSearchBluetooth extends StatelessWidget {
   final BleViewModel bleViewModel;
-  final SearchongBluetoothViewModel searchingBluetoothVM;
+  final SearchingBluetoothViewModel searchingBluetoothVM;
+
   const BottonSearchBluetooth({
     super.key,
     required this.bleViewModel,
@@ -15,7 +16,7 @@ class BottonSearchBluetooth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width / 375;
-    final vm = bleViewModel;
+
     return Stack(
       alignment: AlignmentDirectional.centerStart,
       children: [
@@ -24,7 +25,7 @@ class BottonSearchBluetooth extends StatelessWidget {
           child: ArcText(
             radius: 120,
             text: 'VAMOS   TENTAR   VIA   BLUETOOTH',
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -37,17 +38,20 @@ class BottonSearchBluetooth extends StatelessWidget {
         Align(
           alignment: Alignment.center,
           child: Observer(
-            builder: (context) {
+            builder: (_) {
               return InkWell(
                 onTap: () {
-                  vm.startScan();
-                  searchingBluetoothVM.setBluetoothList(true);
+                  if (!searchingBluetoothVM.bluetoothList) {
+                    bleViewModel.startScan();
+                    searchingBluetoothVM.setBluetoothList(true);
+                  }
                 },
+                borderRadius: BorderRadius.circular(100),
                 child: Container(
                   width: 150 * width,
                   height: 150 * width,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 218, 255, 96),
+                    color: const Color.fromARGB(255, 218, 255, 96),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Icon(

@@ -1,11 +1,12 @@
+import 'package:anda_ai/core/core.dart';
 import 'package:anda_ai/presentation/presentation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class SearchingBluetoothView extends StatelessWidget {
   final BleViewModel bleViewModel;
-  final SearchongBluetoothViewModel searchingBluetoothVM;
+  final SearchingBluetoothViewModel searchingBluetoothVM;
+
   const SearchingBluetoothView({
     super.key,
     required this.bleViewModel,
@@ -15,8 +16,9 @@ class SearchingBluetoothView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width / 375;
+
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 212, 182, 255),
+      backgroundColor: const Color.fromARGB(255, 212, 182, 255),
       body: Observer(
         builder: (context) {
           return Stack(
@@ -28,10 +30,10 @@ class SearchingBluetoothView extends StatelessWidget {
                   searchingBluetoothVM: searchingBluetoothVM,
                 ),
               ),
-              if (searchingBluetoothVM.bluetoothList == true)
+              if (searchingBluetoothVM.bluetoothList)
                 InkWell(
                   onTap: () {
-                    searchingBluetoothVM.setBluetoothListFalse();
+                    searchingBluetoothVM.setBluetoothList(false);
                   },
                   child: Container(
                     width: double.infinity,
@@ -39,67 +41,74 @@ class SearchingBluetoothView extends StatelessWidget {
                     color: const Color.fromARGB(108, 0, 0, 0),
                   ),
                 ),
-              if (searchingBluetoothVM.bluetoothList == true)
+              if (searchingBluetoothVM.bluetoothList)
                 Container(
                   width: 280 * width,
                   height: 350 * width,
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.deepPurple[100],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
-                    //mainAxisAlignment: bleViewModel.devices.isNotEmpty ? MainAxisAlignment.start : MainAxisAlignment.center,
                     children: [
                       Align(
-                        alignment: Alignment.topLeft,
-                        child: InkWell(
-                          onTap: () {}, 
-                          child: Icon(Icons.close),
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                          onTap: () {
+                            searchingBluetoothVM.setBluetoothList(false);
+                          },
+                          child: const Icon(Icons.close),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      if (bleViewModel.devices.isNotEmpty)
-                        Observer(
-                          builder: (_) => ListView.builder(
-                            itemCount: bleViewModel.devices.length,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (_, index) {
-                              final device = bleViewModel.devices[index];
-                              return ListTile(
-                                title: Text(device.platformName),
-                                subtitle: Text(device.remoteId.str),
-                                trailing: const Icon(Icons.bluetooth),
-                                onTap: () async {
-                                  await bleViewModel.connectToDevice(device);
-                                  await bleViewModel.subscribeToSteps(
-                                    device,
-                                    Guid(
-                                      '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
-                                    ),
-                                    Guid(
-                                      '6e400003-b5a3-f393-e0a9-e50e24dcca9e',
-                                    ),
-                                  );
-                                },
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: Observer(
+                          builder: (_) {
+                            if (bleViewModel.devices.isEmpty) {
+                              return const Center(
+                                child: Text(
+                                  "Não foram encontrados dispositivos",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
                               );
-                            },
-                          ),
-                        )
-                      else
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              "Não foram encontrados dispositivos",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
+                            }
+
+                            return ListView.builder(
+                              itemCount: bleViewModel.devices.length,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (_, index) {
+                                final device = bleViewModel.devices[index];
+                                return ListTile(
+                                  title: Text(
+                                    device.platformName
+                                  ),
+                                  subtitle: Text(device.remoteId.str),
+                                  trailing: const Icon(Icons.bluetooth),
+                                  onTap: () async {
+                                    await bleViewModel.connect(device);
+                                    searchingBluetoothVM.setBluetoothList(
+                                      false,
+                                    );
+
+                                    if (context.mounted) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.steps,
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                            );
+                          },
                         ),
+                      ),
                     ],
                   ),
                 ),

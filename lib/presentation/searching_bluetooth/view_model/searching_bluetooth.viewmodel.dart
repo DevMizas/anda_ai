@@ -1,9 +1,9 @@
 import 'package:mobx/mobx.dart';
 part 'searching_bluetooth.viewmodel.g.dart';
 
-class SearchongBluetoothViewModel = _SearchongBluetoothViewModelBase with _$SearchongBluetoothViewModel;
+class SearchingBluetoothViewModel = _SearchingBluetoothViewModelBase with _$SearchingBluetoothViewModel;
 
-abstract class _SearchongBluetoothViewModelBase with Store {
+abstract class _SearchingBluetoothViewModelBase with Store {
   @observable
   bool bluetoothList = false;
 
