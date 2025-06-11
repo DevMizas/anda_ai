@@ -57,6 +57,22 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
     });
   }
 
+  late final _$localStepCountAtom =
+      Atom(name: '_BleViewModelBase.localStepCount', context: context);
+
+  @override
+  int get localStepCount {
+    _$localStepCountAtom.reportRead();
+    return super.localStepCount;
+  }
+
+  @override
+  set localStepCount(int value) {
+    _$localStepCountAtom.reportWrite(value, super.localStepCount, () {
+      super.localStepCount = value;
+    });
+  }
+
   late final _$bleStepsAtom =
       Atom(name: '_BleViewModelBase.bleSteps', context: context);
 
@@ -70,6 +86,23 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
   set bleSteps(int value) {
     _$bleStepsAtom.reportWrite(value, super.bleSteps, () {
       super.bleSteps = value;
+    });
+  }
+
+  late final _$initialLocalStepCountAtom =
+      Atom(name: '_BleViewModelBase.initialLocalStepCount', context: context);
+
+  @override
+  int get initialLocalStepCount {
+    _$initialLocalStepCountAtom.reportRead();
+    return super.initialLocalStepCount;
+  }
+
+  @override
+  set initialLocalStepCount(int value) {
+    _$initialLocalStepCountAtom.reportWrite(value, super.initialLocalStepCount,
+        () {
+      super.initialLocalStepCount = value;
     });
   }
 
@@ -91,6 +124,28 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
 
   late final _$_BleViewModelBaseActionController =
       ActionController(name: '_BleViewModelBase', context: context);
+
+  @override
+  void startLocalStepCounter() {
+    final _$actionInfo = _$_BleViewModelBaseActionController.startAction(
+        name: '_BleViewModelBase.startLocalStepCounter');
+    try {
+      return super.startLocalStepCounter();
+    } finally {
+      _$_BleViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void stopLocalStepCounter() {
+    final _$actionInfo = _$_BleViewModelBaseActionController.startAction(
+        name: '_BleViewModelBase.stopLocalStepCounter');
+    try {
+      return super.stopLocalStepCounter();
+    } finally {
+      _$_BleViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void addDevice(BluetoothDevice device) {
@@ -131,7 +186,9 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
 devices: ${devices},
 stepCount: ${stepCount},
 isConnected: ${isConnected},
-bleSteps: ${bleSteps}
+localStepCount: ${localStepCount},
+bleSteps: ${bleSteps},
+initialLocalStepCount: ${initialLocalStepCount}
     ''';
   }
 }

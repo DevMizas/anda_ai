@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:pedometer/pedometer.dart';
 
 part 'ble.viewmodel.g.dart';
 
@@ -9,6 +11,7 @@ class BleViewModel = _BleViewModelBase with _$BleViewModel;
 abstract class _BleViewModelBase with Store {
   BluetoothDevice? connectedDevice;
   BluetoothCharacteristic? stepCharacteristic;
+  StreamSubscription<StepCount>? _stepCountSubscription;
 
   @observable
   ObservableList<BluetoothDevice> devices = ObservableList<BluetoothDevice>();
@@ -19,16 +22,46 @@ abstract class _BleViewModelBase with Store {
   @observable
   bool isConnected = false;
 
+  @observable
+  int localStepCount = 0;
+
+  @observable
+  int bleSteps = 0;
+
+  @observable
+  int initialLocalStepCount = -1;
+
   @action
-void addDevice(BluetoothDevice device) {
-  if (device.platformName.trim().isEmpty) return;
-
-  final exists = devices.any((d) => d.remoteId == device.remoteId);
-  if (!exists) {
-    devices.add(device);
+  void startLocalStepCounter() {
+    _stepCountSubscription = Pedometer.stepCountStream.listen(
+      (StepCount event) {
+        if (initialLocalStepCount == -1) {
+          initialLocalStepCount = event.steps;
+        }
+        localStepCount = event.steps - initialLocalStepCount;
+      },
+      onError: (error) {
+        print('Erro ao ler passos locais: $error');
+      },
+      cancelOnError: true,
+    );
   }
-}
 
+  @action
+  void stopLocalStepCounter() {
+    _stepCountSubscription?.cancel();
+    _stepCountSubscription = null;
+  }
+
+  @action
+  void addDevice(BluetoothDevice device) {
+    if (device.platformName.trim().isEmpty) return;
+
+    final exists = devices.any((d) => d.remoteId == device.remoteId);
+    if (!exists) {
+      devices.add(device);
+    }
+  }
 
   @action
   void clearDevices() {
@@ -42,7 +75,6 @@ void addDevice(BluetoothDevice device) {
     try {
       await device.connect(autoConnect: false);
     } catch (e) {
-      // Se já estiver conectado, o erro pode ser ignorado
       if (!e.toString().toLowerCase().contains('already connected')) {
         print("Erro ao conectar no dispositivo: $e");
         return;
@@ -83,7 +115,7 @@ void addDevice(BluetoothDevice device) {
       final data = Uint8List.fromList(value);
       if (_isStepPacket(data)) {
         final steps = _parseStepCount(data);
-        stepCount = steps;
+        bleSteps = steps;
       }
     });
   }
@@ -100,9 +132,6 @@ void addDevice(BluetoothDevice device) {
     if (!_isValidPacket(data)) return 0;
     return data[10];
   }
-
-  @observable
-  int bleSteps = 0;
 
   @action
   void startScan() {

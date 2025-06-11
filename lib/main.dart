@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchingBluetoothVM = SearchingBluetoothViewModel();
     final bleViewModel = BleViewModel();
+    final sensorViewModel = SensorCheckViewModel();
   
 
     return MaterialApp(
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         AppRoutes.home: (_) => SensorCheckView(),
-        AppRoutes.steps: (_) => Stepsiew(bleViewModel: bleViewModel),
+        AppRoutes.steps: (_) => Stepsiew(bleViewModel: bleViewModel, sensorViewModel: sensorViewModel),
         AppRoutes.searchingBluetooth: (_) => SearchingBluetoothView(
           bleViewModel: bleViewModel,
           searchingBluetoothVM: searchingBluetoothVM,

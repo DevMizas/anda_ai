@@ -4,7 +4,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 part 'sensor_check.viewmodel.g.dart';
 
-class SensorCheckViewModel = _SensorCheckViewModelBase with _$SensorCheckViewModel;
+class SensorCheckViewModel = _SensorCheckViewModelBase
+    with _$SensorCheckViewModel;
 
 abstract class _SensorCheckViewModelBase with Store {
   @observable
@@ -26,7 +27,13 @@ abstract class _SensorCheckViewModelBase with Store {
     }
 
     try {
-      Pedometer.stepCountStream.listen(onStepCount).onError(_onStepCountError);
+      final subscription = Pedometer.stepCountStream.listen(
+        (event) {},
+        onError: _onStepCountError,
+      );
+      await Future.delayed(Duration(milliseconds: 500));
+      await subscription.cancel();
+
       sensorStatusText = "Sensor funcionando";
       hasSensor = true;
     } catch (e) {
