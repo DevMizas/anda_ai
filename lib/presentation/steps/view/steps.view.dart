@@ -62,7 +62,7 @@ class _StepsiewState extends State<Stepsiew> {
                     child: Text(
                       hasSensor
                   ? "${widget.bleViewModel.localStepCount}"
-                  : "${widget.bleViewModel.stepCount}",
+                  : "${widget.bleViewModel.bleSteps}",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 50 * width,

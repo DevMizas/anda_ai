@@ -89,6 +89,22 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
     });
   }
 
+  late final _$initialBleStepsAtom =
+      Atom(name: '_BleViewModelBase.initialBleSteps', context: context);
+
+  @override
+  int get initialBleSteps {
+    _$initialBleStepsAtom.reportRead();
+    return super.initialBleSteps;
+  }
+
+  @override
+  set initialBleSteps(int value) {
+    _$initialBleStepsAtom.reportWrite(value, super.initialBleSteps, () {
+      super.initialBleSteps = value;
+    });
+  }
+
   late final _$initialLocalStepCountAtom =
       Atom(name: '_BleViewModelBase.initialLocalStepCount', context: context);
 
@@ -188,6 +204,7 @@ stepCount: ${stepCount},
 isConnected: ${isConnected},
 localStepCount: ${localStepCount},
 bleSteps: ${bleSteps},
+initialBleSteps: ${initialBleSteps},
 initialLocalStepCount: ${initialLocalStepCount}
     ''';
   }

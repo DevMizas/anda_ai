@@ -35,7 +35,7 @@ abstract class _SensorCheckViewModelBase with Store {
       await subscription.cancel();
 
       sensorStatusText = "Sensor funcionando";
-      hasSensor = true;
+      hasSensor = false;//
     } catch (e) {
       sensorStatusText = "Erro ao iniciar pedômetro";
       hasSensor = false;

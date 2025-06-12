@@ -29,6 +29,9 @@ abstract class _BleViewModelBase with Store {
   int bleSteps = 0;
 
   @observable
+  int initialBleSteps = -1;
+
+  @observable
   int initialLocalStepCount = -1;
 
   @action
@@ -99,13 +102,15 @@ abstract class _BleViewModelBase with Store {
   }
 
   @action
-  Future<void> disconnect() async {
-    await connectedDevice?.disconnect();
-    connectedDevice = null;
-    stepCharacteristic = null;
-    stepCount = 0;
-    isConnected = false;
-  }
+Future<void> disconnect() async {
+  await connectedDevice?.disconnect();
+  connectedDevice = null;
+  stepCharacteristic = null;
+  stepCount = 0;
+  initialBleSteps = -1; // reset
+  bleSteps = 0;
+  isConnected = false;
+}
 
   Future<void> _autoSubscribeToSteps(
     BluetoothCharacteristic characteristic,
@@ -115,7 +120,12 @@ abstract class _BleViewModelBase with Store {
       final data = Uint8List.fromList(value);
       if (_isStepPacket(data)) {
         final steps = _parseStepCount(data);
-        bleSteps = steps;
+
+        if (initialBleSteps == -1) {
+          initialBleSteps = steps;
+        }
+
+        bleSteps = steps - initialBleSteps;
       }
     });
   }
