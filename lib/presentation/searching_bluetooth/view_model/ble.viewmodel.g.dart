@@ -186,6 +186,17 @@ mixin _$BleViewModel on _BleViewModelBase, Store {
   }
 
   @override
+  void updateStepsFromPacket(List<int> packet) {
+    final _$actionInfo = _$_BleViewModelBaseActionController.startAction(
+        name: '_BleViewModelBase.updateStepsFromPacket');
+    try {
+      return super.updateStepsFromPacket(packet);
+    } finally {
+      _$_BleViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void startScan() {
     final _$actionInfo = _$_BleViewModelBaseActionController.startAction(
         name: '_BleViewModelBase.startScan');

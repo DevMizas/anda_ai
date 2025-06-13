@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:pedometer/pedometer.dart';
@@ -75,86 +74,94 @@ abstract class _BleViewModelBase with Store {
   Future<void> connect(BluetoothDevice device) async {
     connectedDevice = device;
 
-    try {
-      await device.connect(autoConnect: false);
-    } catch (e) {
-      if (!e.toString().toLowerCase().contains('already connected')) {
-        print("Erro ao conectar no dispositivo: $e");
-        return;
-      }
-    }
+    await device.connect(autoConnect: false);
+    await device.requestMtu(256);
+    await device.discoverServices();
 
-    final services = await connectedDevice?.discoverServices();
-    if (services == null) return;
+    final services = await device.discoverServices();
+
+    BluetoothCharacteristic? notifyCharacteristic;
 
     for (var service in services) {
       for (var characteristic in service.characteristics) {
-        if (characteristic.uuid.toString().toLowerCase() ==
-            '6e400003-b5a3-f393-e0a9-e50e24dcca9e') {
-          stepCharacteristic = characteristic;
-          await _autoSubscribeToSteps(characteristic);
+        if (characteristic.properties.notify) {
+          notifyCharacteristic = characteristic;
+          print('🔍 Found Notify Characteristic: ${characteristic.uuid}');
           break;
         }
       }
+      if (notifyCharacteristic != null) break;
     }
 
-    isConnected = true;
+    if (notifyCharacteristic != null) {
+      await _subscribeToCharacteristic(notifyCharacteristic);
+    } else {
+      print('❌ Nenhuma characteristic com notify encontrada.');
+    }
+  }
+
+  Future<void> _subscribeToCharacteristic(
+    BluetoothCharacteristic characteristic,
+  ) async {
+    await characteristic.setNotifyValue(true);
+
+    late final StreamSubscription<List<int>> subscription;
+
+    subscription = characteristic.value.listen((data) {
+      if (data.isNotEmpty) {
+        updateStepsFromPacket(data);
+
+        // ⛔️ Cancela após o primeiro pacote recebido
+        //subscription.cancel();
+      }
+    });
   }
 
   @action
-Future<void> disconnect() async {
-  await connectedDevice?.disconnect();
-  connectedDevice = null;
-  stepCharacteristic = null;
-  stepCount = 0;
-  initialBleSteps = -1; // reset
-  bleSteps = 0;
-  isConnected = false;
-}
+  Future<void> disconnect() async {
+    await connectedDevice?.disconnect();
+    connectedDevice = null;
+    stepCharacteristic = null;
+    stepCount = 0;
+    initialBleSteps = -1; // reset
+    bleSteps = 0;
+    isConnected = false;
+  }
 
-Future<void> _autoSubscribeToSteps(BluetoothCharacteristic characteristic) async {
-  await characteristic.setNotifyValue(true);
-  characteristic.lastValueStream.listen((value) {
-    if (value.isNotEmpty) {
-      print("📥 Passos recebidos (value[0]): ${value[0]}");
-      bleSteps = value[0];
+  @action
+  void updateStepsFromPacket(List<int> packet) {
+    print('🟢 BLE Raw Packet Received: $packet');
+
+    if (packet.isEmpty) {
+      print('⚠️ Pacote BLE inválido ou vazio');
+      return;
     }
-  });
-}
 
+    // Validação mínima — ajuste se necessário para seu relógio
+    if (packet.length < 17) {
+      print('⚠️ Pacote BLE inválido ou incompleto');
+      return;
+    }
 
+    // Verifica header, se necessário (opcional)
+    final header = packet[0];
+    if (header != 0xAB) {
+      print('⚠️ Header desconhecido: $header');
+      return;
+    }
 
-  // Future<void> _autoSubscribeToSteps(
-  //   BluetoothCharacteristic characteristic,
-  // ) async {
-  //   await characteristic.setNotifyValue(true);
-  //   characteristic.lastValueStream.listen((value) {
-  //     final data = Uint8List.fromList(value);
-  //     if (_isStepPacket(data)) {
-  //       final steps = _parseStepCount(data);
+    try {
+      // 🏃‍♂️ Extrai os bytes dos passos (posição pode variar conforme o dispositivo)
+      final stepsLow = packet[15]; // Byte menos significativo
+      final stepsHigh = packet[16]; // Byte mais significativo
 
-  //       print("🟢 BLE Steps Received: $data");
+      final combinedSteps = stepsLow + (stepsHigh << 8); // Little endian
 
-  //       if (initialBleSteps == -1) {
-  //         initialBleSteps = steps;
-  //       }
-
-  //       bleSteps = steps - initialBleSteps;
-  //     }
-  //   });
-  // }
-
-  bool _isValidPacket(Uint8List data) {
-    return data.isNotEmpty && data[0] == 0xAB && data.length > 10;
-  }
-
-  bool _isStepPacket(Uint8List data) {
-    return data.length >= 20 && data[0] == 0xAB && data[10] > 0;
-  }
-
-  int _parseStepCount(Uint8List data) {
-    if (!_isValidPacket(data)) return 0;
-    return data[10];
+      print('👣 Passos combinados (BLE): $combinedSteps');
+      bleSteps = combinedSteps;
+    } catch (e) {
+      print('❌ Erro ao processar pacote BLE: $e');
+    }
   }
 
   @action
