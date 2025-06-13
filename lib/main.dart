@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         AppRoutes.home: (_) => SensorCheckView(),
-        AppRoutes.steps: (_) => Stepsiew(bleViewModel: bleViewModel, sensorViewModel: sensorViewModel),
+        AppRoutes.steps: (_) => StepsView(bleViewModel: bleViewModel, sensorViewModel: sensorViewModel),
         AppRoutes.searchingBluetooth: (_) => SearchingBluetoothView(
           bleViewModel: bleViewModel,
           searchingBluetoothVM: searchingBluetoothVM,

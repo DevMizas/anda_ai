@@ -112,23 +112,37 @@ Future<void> disconnect() async {
   isConnected = false;
 }
 
-  Future<void> _autoSubscribeToSteps(
-    BluetoothCharacteristic characteristic,
-  ) async {
-    await characteristic.setNotifyValue(true);
-    characteristic.lastValueStream.listen((value) {
-      final data = Uint8List.fromList(value);
-      if (_isStepPacket(data)) {
-        final steps = _parseStepCount(data);
+Future<void> _autoSubscribeToSteps(BluetoothCharacteristic characteristic) async {
+  await characteristic.setNotifyValue(true);
+  characteristic.lastValueStream.listen((value) {
+    if (value.isNotEmpty) {
+      print("📥 Passos recebidos (value[0]): ${value[0]}");
+      bleSteps = value[0];
+    }
+  });
+}
 
-        if (initialBleSteps == -1) {
-          initialBleSteps = steps;
-        }
 
-        bleSteps = steps - initialBleSteps;
-      }
-    });
-  }
+
+  // Future<void> _autoSubscribeToSteps(
+  //   BluetoothCharacteristic characteristic,
+  // ) async {
+  //   await characteristic.setNotifyValue(true);
+  //   characteristic.lastValueStream.listen((value) {
+  //     final data = Uint8List.fromList(value);
+  //     if (_isStepPacket(data)) {
+  //       final steps = _parseStepCount(data);
+
+  //       print("🟢 BLE Steps Received: $data");
+
+  //       if (initialBleSteps == -1) {
+  //         initialBleSteps = steps;
+  //       }
+
+  //       bleSteps = steps - initialBleSteps;
+  //     }
+  //   });
+  // }
 
   bool _isValidPacket(Uint8List data) {
     return data.isNotEmpty && data[0] == 0xAB && data.length > 10;
