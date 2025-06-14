@@ -34,13 +34,10 @@ class _SensorCheckViewState extends State<SensorCheckView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (widget.sensorCheckViewModel.hasSensor == false)
-                Lottie.asset('assets/error_animation.json'),
-              SizedBox(
-                height: widget.sensorCheckViewModel.hasSensor == false
-                    ? 40 * width
-                    : MediaQuery.of(context).size.height / 2,
-              ),
+              
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.6,
+                    child: Lottie.asset(widget.sensorCheckViewModel.hasSensor == false ? 'assets/error_animation.json' : 'assets/success_animation.json')),
               Align(
                 alignment: Alignment.center,
                 child: Text(
