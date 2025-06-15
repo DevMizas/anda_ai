@@ -86,7 +86,6 @@ abstract class _BleViewModelBase with Store {
       for (var characteristic in service.characteristics) {
         if (characteristic.properties.notify) {
           notifyCharacteristic = characteristic;
-          print('🔍 Found Notify Characteristic: ${characteristic.uuid}');
           break;
         }
       }
@@ -96,7 +95,7 @@ abstract class _BleViewModelBase with Store {
     if (notifyCharacteristic != null) {
       await _subscribeToCharacteristic(notifyCharacteristic);
     } else {
-      print('❌ Nenhuma characteristic com notify encontrada.');
+      print('Nenhuma characteristic com notify encontrada.');
     }
   }
 
@@ -111,8 +110,7 @@ abstract class _BleViewModelBase with Store {
       if (data.isNotEmpty) {
         updateStepsFromPacket(data);
 
-        // ⛔️ Cancela após o primeiro pacote recebido
-        //subscription.cancel();
+        subscription.cancel();
       }
     });
   }
@@ -123,44 +121,41 @@ abstract class _BleViewModelBase with Store {
     connectedDevice = null;
     stepCharacteristic = null;
     stepCount = 0;
-    initialBleSteps = -1; // reset
+    initialBleSteps = -1;
     bleSteps = 0;
     isConnected = false;
   }
 
   @action
   void updateStepsFromPacket(List<int> packet) {
-    print('🟢 BLE Raw Packet Received: $packet');
+    print('BLE Raw Packet Received: $packet');
 
     if (packet.isEmpty) {
-      print('⚠️ Pacote BLE inválido ou vazio');
+      print('Pacote BLE inválido ou vazio');
       return;
     }
 
-    // Validação mínima — ajuste se necessário para seu relógio
     if (packet.length < 17) {
-      print('⚠️ Pacote BLE inválido ou incompleto');
+      print('Pacote BLE inválido ou incompleto');
       return;
     }
 
-    // Verifica header, se necessário (opcional)
     final header = packet[0];
     if (header != 0xAB) {
-      print('⚠️ Header desconhecido: $header');
+      print('Header desconhecido: $header');
       return;
     }
 
     try {
-      // 🏃‍♂️ Extrai os bytes dos passos (posição pode variar conforme o dispositivo)
-      final stepsLow = packet[15]; // Byte menos significativo
-      final stepsHigh = packet[16]; // Byte mais significativo
+      final stepsLow = packet[5];
+      final stepsHigh = packet[7];
 
-      final combinedSteps = stepsLow + (stepsHigh << 8); // Little endian
+      final combinedSteps = stepsLow + (stepsHigh << 8);
 
-      print('👣 Passos combinados (BLE): $combinedSteps');
+      print('Passos combinados (BLE): $combinedSteps');
       bleSteps = combinedSteps;
     } catch (e) {
-      print('❌ Erro ao processar pacote BLE: $e');
+      print('Erro ao processar pacote BLE: $e');
     }
   }
 
