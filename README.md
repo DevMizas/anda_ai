@@ -33,11 +33,11 @@ Caso não possua, o app se conecta via **Bluetooth Low Energy (BLE)** a um smart
 
 O projeto foi estruturado seguindo o padrão **MVVM (Model–View–ViewModel)**, com separação clara entre camadas de apresentação, domínio e infraestrutura:
 
-core/ → regras de negócio e abstrações
-infra/ → integrações externas (BLE, sensores)
-models/ → modelos de dados
-presentation/ → views e viewmodels
-main.dart → bootstrap da aplicação
+- **core/** → regras de negócio e abstrações
+- **infra/** → integrações externas (BLE, sensores)
+- **models/** → modelos de dados
+- **presentation/** → views e viewmodels
+- **main.dart** → bootstrap da aplicação
 
 Essa organização facilita manutenção, testabilidade e evolução do projeto.
 
