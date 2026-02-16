@@ -7,6 +7,14 @@ Caso não possua, o app se conecta via **Bluetooth Low Energy (BLE)** a um smart
 
 ---
 
+## 📱 Demonstração
+
+<p align="center">
+  <img src="assets/demo.gif" width="300" />
+</p>
+
+---
+
 ## 🚀 Funcionalidades
 
 - Detecção automática de sensor de passos no smartphone  
@@ -59,14 +67,6 @@ Essa organização facilita manutenção, testabilidade e evolução do projeto.
 ## 🎯 Objetivo do Projeto
 
 Este projeto foi criado como um **estudo prático de integração de hardware via BLE**, arquitetura limpa e desenvolvimento de aplicações resilientes, reforçando boas práticas de engenharia de software e experiência do usuário.
-
----
-
-## 📱 Demonstração
-
-<p align="center">
-  <img src="assets/demo.gif" width="300" />
-</p>
 
 ---
 
