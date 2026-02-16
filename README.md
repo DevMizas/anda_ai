@@ -62,6 +62,14 @@ Este projeto foi criado como um **estudo prático de integração de hardware vi
 
 ---
 
+## 📱 Demonstração
+
+<p align="center">
+  <img src="assets/demo.gif" width="300" />
+</p>
+
+---
+
 ## 👨‍💻 Autor
 
 **Mizael Eduardo dos Santos**  
